@@ -1,25 +1,37 @@
 const express = require('express');
+const inquirer = require('inquirer');
+
 // Import and require mysql2
 const mysql = require('mysql2');
-const PORT = process.env.PORT || 3001;
-const chalk = require('chalk');
-const { default: inquirer } = require('inquirer');
-//const figlet = require('figlet');
 
-const roleQuery ='SELECT * FROM roles; SELECT CONCAT (e.first_name,"",e.last_name) AS full_name FROM employee e';
+const PORT = process.env.PORT || 3001;
+const app = express();
+
+// // Express middleware
+// app.use(express.urlencoded({ extended: false }));
+// app.use(express.json());
 
 // Connect to database
 const db = mysql.createConnection(
     {
       host: '127.0.0.1',
       // MySQL username,
-      user: 'root',
+      user: process.env.DB_USER,
       // TODO: Add MySQL password here
-      password: 'password',
-      database: 'Employee_DB'
+      password: process.env.DB_PASSWORD,
+      database: 'Employee_DB',
     },
     console.log(`Connected to the Employee_DB database.`)
   );
+
+const roleQuery ='SELECT * FROM roles; SELECT CONCAT (e.first_name,"",e.last_name) AS full_name FROM employee e';
+const questionsNE =[
+'What is the first name?',
+'What is the last name?',
+'Enter their role',
+'Who is their manager?',
+];
+
 //Connected database to display on terminal
 connection.connect((err) =>{
     if(err) throw err;
@@ -222,8 +234,38 @@ const addDept= ()=> {
             connection.query(roleQuery,(err,results) =>{
             if (err) throw err;
             inquirer.prompt([{
-                name: 'newFname'
-                
-            }])
+                name: 'newFname',
+                type: 'input',
+                message: questionsNE[0]
+                },
+                {
+                    name: 'newLname',
+                    type: 'input',
+                    message: questionsNE[1]   
+                },
+                {
+                name: 'role',
+                type:'list',
+                choices:function (){
+                    const optArry = results[0].map((choice)=> choice.title);
+                    return optArry;
+                },
+                message: questionsNE[2],    
+                },
+                {
+                    
+                }
+        
+        
+        ])
         });
     };
+
+    // Default response for any other request (Not Found)
+app.use((req, res) => {
+    res.status(404).end();
+  });
+  
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
