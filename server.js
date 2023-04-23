@@ -1,11 +1,15 @@
 const express = require('express');
 const inquirer = require('inquirer');
+const cTable = require('console.table');
+const chalk = require("chalk");
+const figlet = require("figlet");
 
 // Import and require mysql2
 const mysql = require('mysql2');
 
 const PORT = process.env.PORT || 3001;
 const app = express();
+require('dotenv').config();
 
 // // Express middleware
 // app.use(express.urlencoded({ extended: false }));
@@ -33,20 +37,21 @@ const questionsNE =[
 ];
 
 //Connected database to display on terminal
-connection.connect((err) =>{
+db.connect((err) =>{
     if(err) throw err;
     console.table(chalk.white('\nConnected to the Employee_DB database. \n'));
 
     console.table(chalk.white.bold(
-          `===========================================================`
+          `==========================================================================`
     ));
     console.log(``);
-    console.table(chalk.greenBright('\n Employee Manager \n'));
+    // console.table(chalk.greenBright('\n Employee Manager \n'));
+    console.table(chalk.greenBright.bold(figlet.textSync("Employee Tracker")));
     console.log(``);
     console.log(``);
     console.table(
         chalk.white.bold(
-            `==========================================================`
+            `========================================================================`
         ));
 options();
 });
@@ -145,7 +150,7 @@ const options= () =>{
 
 const viewDept= ()=> {
 const query = "SELECT * FROM department";
-connection.query(query,(err,results) =>{
+db.query(query,(err,results) =>{
     if (err) throw err;
     console.table(results);
     options();
@@ -154,7 +159,7 @@ connection.query(query,(err,results) =>{
 
 const viewRoles= () =>{
     const query = "SELECT * FROM roles";
-    connection.query(query,(err,results) =>{
+    db.query(query,(err,results) =>{
         if (err) throw err;
         console.table(results);
         options();
