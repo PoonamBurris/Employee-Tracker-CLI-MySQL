@@ -5,8 +5,8 @@ USE Employee_DB;
 
 CREATE TABLE department (
     id INTEGER(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    dept_name VARCHAR (40) NOT NULL,
-    -- PRIMARY KEY (id)
+    dept_name VARCHAR (40) NOT NULL
+    
 );
 
 CREATE TABLE roles (
@@ -31,19 +31,19 @@ manager_id INTEGER,
 INDEX `index_role`(role_id),
 CONSTRAINT `fk_role_id`
 FOREIGN KEY (role_id)
-REFERENCES role(id) ON UPDATE CASCADE ON DELETE RESTRICT,
+REFERENCES roles(id) ON UPDATE CASCADE ON DELETE RESTRICT,
 INDEX `index_manager`(manager_id),
 CONSTRAINT `fk_manager_id`
 FOREIGN KEY (manager_id)
-REFERENCES role(id) ON UPDATE CASCADE ON DELETE RESTRICT
+REFERENCES roles(id) ON UPDATE CASCADE ON DELETE RESTRICT
 );
 
-SELECT * FROM employee;
-SELECT * FROM roles;
-SELECT * FROM department;
+-- SELECT * FROM employee;
+-- SELECT * FROM roles;
+-- SELECT * FROM department;
 
-INSERT INTO department(name)
-VALUES ('copy')
-SELECT * FROM department
-SELECT name AS "Departments" FROM department
+-- INSERT INTO department(name)
+-- VALUES ('copy')
+-- SELECT * FROM department
+-- SELECT name AS "Departments" FROM department
 
