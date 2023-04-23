@@ -168,7 +168,7 @@ const viewRoles= () =>{
 
 const viewEmply= () =>{
     const query = "SELECT * FROM employee";
-    connection.query(query,(err,results) =>{
+    db.query(query,(err,results) =>{
         if (err) throw err;
         console.table(results);
         options();
@@ -177,7 +177,7 @@ const viewEmply= () =>{
 
 const addDept= ()=> {
     const query = "SELECT * FROM department";
-    connection.query(query,(err,results) =>{
+    db.query(query,(err,results) =>{
         if (err) throw err;
         console.table(results);
 
@@ -189,7 +189,7 @@ const addDept= ()=> {
                 },
             ])
             .then((ans)=>{
-                connection.query(
+                db.query(
                     `INSERT INTO department(name) VALUES(?)`,
                     [ans.newDept],
                     (err,results)=>{
@@ -202,7 +202,7 @@ const addDept= ()=> {
 
     const addRole= () =>{
         const query = `SELECT * FROM roles";SELECT * FROM department;`;
-        connection.query(query,(err,results) => {
+        db.query(query,(err,results) => {
             if (err) throw err;
             console.table(results[0]);
             inquirer.prompt([
