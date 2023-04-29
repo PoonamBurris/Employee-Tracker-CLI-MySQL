@@ -5,7 +5,7 @@ USE Employee_DB;
 
 CREATE TABLE department (
     id INTEGER(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    department VARCHAR (40) NOT NULL
+    dept_name VARCHAR (40) NOT NULL
     
 );
 
@@ -13,7 +13,7 @@ CREATE TABLE roles (
 id INTEGER (11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
 title VARCHAR (40) NOT NULL,
 department_id INTEGER,
-department VARCHAR (40) NOT NULL,
+dept_name VARCHAR (40) NOT NULL,
 salary DECIMAL,
 -- PRIMARY KEY (id),
 -- INDEX `index_dept_id`(department_id),
@@ -27,7 +27,7 @@ id INTEGER (11) AUTO_INCREMENT PRIMARY KEY,
 first_name VARCHAR(30) NOT NULL,
 last_name VARCHAR(30) NOT NULL,
 title VARCHAR (40) NOT NULL,
-department VARCHAR (40) NOT NULL,
+dept_name VARCHAR (40) NOT NULL,
 salary DECIMAL,
 role_id INTEGER,
 manager_id INTEGER,

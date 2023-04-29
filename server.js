@@ -183,15 +183,16 @@ const addDept= ()=> {
 
         inquirer.prompt([
                 {
-                    name:'newDept',
+                    name:'department',
                     type:'input',
                     message:'What Department would you like to add?',
                 },
             ])
             .then((ans)=>{
+                const department = ans.department;
                 db.query(
-                    `INSERT INTO department(name) VALUES(?)`,
-                    [ans.newDept],
+                    `INSERT INTO department(dept_name) VALUES('${department}')`,
+                    [ans.department],
                     (err,results)=>{
                     options();
                     }
@@ -200,8 +201,9 @@ const addDept= ()=> {
             });
     };
 
+
     const addRole= () =>{
-        const query = `SELECT * FROM roles";SELECT * FROM department;`;
+        const query = "SELECT id, dept_name FROM department";
         db.query(query,(err,results) => {
             if (err) throw err;
             console.table(results[0]);
@@ -217,53 +219,65 @@ const addDept= ()=> {
                         message:'What is the the new Salary?'  
                     },
                     {
-                        name:'dept',
-                        type:'list',
-                        choice: function(){
-                            let choices = results[1].map((choice)=> choice.name);
-                            return choices
-                        },
-                        message: 'Select the Department fo rthe new Role?',
+                        name:'newdept',
+                        type:'input',
+                        message:'What is the the Department for new role?'
+                      
+                    //     choice: function(){
+                    //         let choices = results[1].map((choice)=> choice.name);
+                    //         return choices;
+                    //     },
+                    //     message: 'Select the Department for the new Role?',
                     },
-                ])
+                ]
+                )
                 .then((ans)=>{
-                    connection.query(`INSERT INTO roles(title, salary, department_id)
-                    VALUES('${ans.newRole}','${ans.newSal}',
-                    (SELECT did FROM department WHERE name = '${ans.dept}'));`);
+                    db.query(`INSERT INTO roles(title, salary, dept_name)
+                    VALUES('${ans.newRole}','${ans.newSal}','${ans.newdept}')`),
                     options();
                 });
     });
     };
 
     const addEmply= () =>{
-            connection.query(roleQuery,(err,results) =>{
+        const query = "SELECT id, title FROM roles";
+        db.query(query,(err,results) => {
             if (err) throw err;
-            inquirer.prompt([{
-                name: 'newFname',
-                type: 'input',
-                message: questionsNE[0]
-                },
-                {
-                    name: 'newLname',
-                    type: 'input',
-                    message: questionsNE[1]   
-                },
-                {
-                name: 'role',
-                type:'list',
-                choices:function (){
-                    const optArry = results[0].map((choice)=> choice.title);
-                    return optArry;
-                },
-                message: questionsNE[2],    
-                },
-                {
-                    
-                }
-        
-        
-        ])
-        });
+            console.table(results[0]);
+            inquirer.prompt([
+                    {
+                        name:'newFname',
+                        type:'input',
+                        message:'What is the the new employees first name?'
+                    },
+                    {
+                        name:'newLname',
+                        type:'input',
+                        message:'What is the new employees last name?'  
+                    },
+                    {
+                        name:'newrole',
+                        type:'input',
+                        message:'What is the new employees role?'
+                    },
+                    {
+                        name:'newSal',
+                        type:'input',
+                        message:'What is the the new Salary?'  
+                    },
+                    {
+                        name:'newManager',
+                        type:'input',
+                        message:'Who is the new employees Manager?'
+                    },
+                ]
+                )
+                .then((ans)=>{
+                    db.query(`INSERT INTO employee(first_name, last_name, title, salary, dept_name,manager)
+                    VALUES('${ans.newFname}','${ans.newLname}','${ans.newrole}','${ans.newSal}','${ans.newManager}')`),
+                    options();
+                });
+    });
     };
 
     // Default response for any other request (Not Found)
