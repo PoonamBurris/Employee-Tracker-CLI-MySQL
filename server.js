@@ -196,7 +196,7 @@ const addDept= ()=> {
 
 
     const addRole= () =>{
-        const query = "SELECT id, dept_id FROM department";
+        const query = "SELECT * FROM roles";
         db.query(query,(err,results) => {
             if (err) throw err;
             console.table(results[0]);
@@ -214,13 +214,13 @@ const addDept= ()=> {
                     {
                         name:'newdept',
                         type:'input',
-                        message:'What is the the Department for new role?'
+                        message:'What is the the Department id for new role?'
                       
                     },
                 ]
                 )
                 .then((ans)=>{
-                    db.query(`INSERT INTO roles(title, salary, dept_id)
+                    db.query(`INSERT INTO roles(title, salary, department_id)
                     VALUES('${ans.newRole}','${ans.newSal}','${ans.newdept}')`),
                     options();
                 });
@@ -228,7 +228,7 @@ const addDept= ()=> {
     };
 
     const addEmply= () =>{
-        const query = "SELECT id, title FROM roles";
+        const query = "SELECT * FROM employee";
         db.query(query,(err,results) => {
             if (err) throw err;
             console.table(results[0]);
@@ -246,7 +246,7 @@ const addDept= ()=> {
                     {
                         name:'newrole',
                         type:'input',
-                        message:'What is the new employees role?'
+                        message:'What is the new employees role id?'
                     },
                     {
                         name:'newSal',
@@ -256,9 +256,8 @@ const addDept= ()=> {
                     {
                         name:'newdept',
                         type:'input',
-                        message:'What is the the Department for new role?'
+                        message:'What is the the Department id for new role?'
                       
-            
                     },
                     {
                         name:'newManager',
@@ -268,8 +267,8 @@ const addDept= ()=> {
                 ]
                 )
                 .then((ans)=>{
-                    db.query(`INSERT INTO employee(first_name, last_name, title, salary, dept_name,manager)
-                    VALUES('${ans.newFname}','${ans.newLname}','${ans.newrole}','${ans.newSal}','${ans.newdept}','${ans.newManager}')`),
+                    db.query(`INSERT INTO employee(first_name, last_name,roles_id,department_id,salary,manager)
+                    VALUES('${ans.newFname}','${ans.newLname}','${ans.newrole}','${ans.newdept}','${ans.newSal}','${ans.newManager}')`),
                     options();
                 });
     });
@@ -278,65 +277,91 @@ const addDept= ()=> {
 
 //update Employee roles
 const updateEmplyrole = () => {
-    //get id and and name from employees; choose what employee's role will be updated
-    db.query(`SELECT id, employee.first_name, employee.last_name FROM employee`, (err, results) => {
-        if (err) {
-            console.log(err);
-        } else {
-            let empQueryArray = results.map((obj) => {
-                return {
-                    //taking values from query and renaming the keys
-                    value: obj.id,
-                    name: obj.first_name + ' ' + obj.last_name
-                };
-            });
-            // console.log(empQueryArray);
-            //query to get roles to choose to update to; need id and role title
-            db.query(`SELECT id, title FROM roles`, async (err, results) => {
-                if (err) {
-                    console.log(err);
-                } else {
-                    let roleQueryArray = results.map((obj) => {
-                        return {
-                            value: obj.id,
-                            name: obj.title
-                        };
-                    });
-                    // console.log(roleQueryArray);
-                    await inquirer.prompt([
-                        {
-                            type: 'list',
-                            name: 'employeeName',
-                            message: `Which employee's role do you want to update?`,
-                            choices: empQueryArray,
-                          },
-                          {
-                            type: 'list',
-                            name: 'roleName',
-                            message: 'Which role do you want to assign the selected employee?',
-                            choices: roleQueryArray,
-                          },
-                    ])
-                    .then((ans) => {
-                        const empName = ans.employeeName;
-                        const roleName = ans.roleName;
-        
-                        db.query(`UPDATE employee SET role_id = ${roleName} WHERE id = ${empName}`, (err, results) => {
-                            if (err) {
-                                console.log(err);
-                            } else {
-                                console.log('');
-                                console.log('EMPLOYEE ROLE UPDATED'.bold.brightCyan);
-                                console.log('');
-                            };
-                        });
-                        options();
-                    });
-                };
-            });
-        };
+    inquirer
+    .prompt([
+      {
+        name: "id",
+        type: "input",
+        message: "What is your employee ID?",
+      },
+      {
+        name: "role",
+        type: "input",
+        message: "What is your role ID?",
+      },
+    ])
+    .then((answers) => {
+      db.query (`UPDATE employee SET roles_id = ${answers.role} WHERE id = ${answers.id}`,
+      (err, results) => {
+        if (err) throw err;
+        console.log(results);
+        options();
+      });
+    })
+    .catch((err) => {
+      throw err;
     });
-}
+};
+
+    // //get id and and name from employees; choose what employee's role will be updated
+    // db.query("SELECT * FROM employee", (err, results) => {
+    //     if (err) {
+    //         console.log(err);
+    //     } else {
+    //         let empQueryArray = results.map((obj) => {
+    //             return {
+    //                 //taking values from query and renaming the keys
+    //                 value: obj.id,
+    //                 name: obj.first_name + ' ' + obj.last_name
+    //             };
+    //         });
+    //         // console.log(empQueryArray);
+    //         //query to get roles to choose to update to; need id and role title
+    //         db.query(`SELECT id, title FROM roles`, async (err, results) => {
+    //             if (err) {
+    //                 console.log(err);
+    //             } else {
+    //                 let roleQueryArray = results.map((obj) => {
+    //                     return {
+    //                         value: obj.id,
+    //                         name: obj.title
+    //                     };
+    //                 });
+                    // console.log(roleQueryArray);
+//                     await inquirer.prompt([
+//                         {
+//                             type: 'list',
+//                             name: 'employeeName',
+//                             message: `Which employee's role do you want to update?`,
+//                             choices: empQueryArray,
+//                           },
+//                           {
+//                             type: 'list',
+//                             name: 'roleName',
+//                             message: 'Which role do you want to assign the selected employee?',
+//                             choices: roleQueryArray,
+//                           },
+//                     ])
+//                     .then((ans) => {
+//                         const empName = ans.employeeName;
+//                         const roleName = ans.roleName;
+        
+//                         db.query(`UPDATE employee SET role_id = ${roleName} WHERE id = ${empName}`, (err, results) => {
+//                             if (err) {
+//                                 console.log(err);
+//                             } else {
+//                                 console.log('');
+//                                 console.log('EMPLOYEE ROLE UPDATED'.bold.brightCyan);
+//                                 console.log('');
+//                             };
+//                         });
+//                         options();
+//                     });
+//                 };
+//             });
+//         };
+//     });
+// }
 
     // Default response for any other request (Not Found)
 app.use((req, res) => {
