@@ -37,6 +37,7 @@
   - [GitHub]https://github.com/PoonamBurris
   
   ## Video
+[Employee-Tracker-CLI-MySQL .webm](https://user-images.githubusercontent.com/119805763/236636625-4581fec9-fc21-4336-9f49-2992cb9d3a59.webm)
 
  
   
