@@ -303,67 +303,6 @@ const updateEmplyrole = () => {
     });
 };
 
-    // //get id and and name from employees; choose what employee's role will be updated
-    // db.query("SELECT * FROM employee", (err, results) => {
-    //     if (err) {
-    //         console.log(err);
-    //     } else {
-    //         let empQueryArray = results.map((obj) => {
-    //             return {
-    //                 //taking values from query and renaming the keys
-    //                 value: obj.id,
-    //                 name: obj.first_name + ' ' + obj.last_name
-    //             };
-    //         });
-    //         // console.log(empQueryArray);
-    //         //query to get roles to choose to update to; need id and role title
-    //         db.query(`SELECT id, title FROM roles`, async (err, results) => {
-    //             if (err) {
-    //                 console.log(err);
-    //             } else {
-    //                 let roleQueryArray = results.map((obj) => {
-    //                     return {
-    //                         value: obj.id,
-    //                         name: obj.title
-    //                     };
-    //                 });
-                    // console.log(roleQueryArray);
-//                     await inquirer.prompt([
-//                         {
-//                             type: 'list',
-//                             name: 'employeeName',
-//                             message: `Which employee's role do you want to update?`,
-//                             choices: empQueryArray,
-//                           },
-//                           {
-//                             type: 'list',
-//                             name: 'roleName',
-//                             message: 'Which role do you want to assign the selected employee?',
-//                             choices: roleQueryArray,
-//                           },
-//                     ])
-//                     .then((ans) => {
-//                         const empName = ans.employeeName;
-//                         const roleName = ans.roleName;
-        
-//                         db.query(`UPDATE employee SET role_id = ${roleName} WHERE id = ${empName}`, (err, results) => {
-//                             if (err) {
-//                                 console.log(err);
-//                             } else {
-//                                 console.log('');
-//                                 console.log('EMPLOYEE ROLE UPDATED'.bold.brightCyan);
-//                                 console.log('');
-//                             };
-//                         });
-//                         options();
-//                     });
-//                 };
-//             });
-//         };
-//     });
-// }
-
-    // Default response for any other request (Not Found)
 app.use((req, res) => {
     res.status(404).end();
   });
