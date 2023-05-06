@@ -18,14 +18,14 @@ VALUES
 ( 'Warehouse clerk', 40000, 6),
 ( 'Research Scientist', 75000, 7);
 
-INSERT INTO employee( first_name, last_name, roles_id)
+INSERT INTO employee( first_name, last_name, roles_id,department_id,salary,manager)
 VALUES
-( 'Andrea', 'West', 1),
-( 'Marlene', 'Ford',2 ),
-( 'Jeff', 'Johnson',3),
-( 'Andrew', 'Barr',4),
-( 'Janice', 'Connor',5),
-( 'Ruby', 'Long',6 ),
-('Skyler', 'Bing',7 );
+( 'Andrea', 'West', 1,1,140000, 'Null'),
+( 'Marlene', 'Ford',2,2,110000, 'Null' ),
+( 'Jeff', 'Johnson',3,3,80000, 'Roger'),
+( 'Andrew', 'Barr',4,4,65000, 'Cody'),
+( 'Janice', 'Connor',5,5,55000,'Chris'),
+( 'Ruby', 'Long',6,6,40000, 'Rosie'),
+('Skyler', 'Bing',7,7,75000, 'Kim');
 
 UPDATE `Employee_DB`.`employee` SET `manager_id` = '1' WHERE (`id`>'1');
