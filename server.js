@@ -11,17 +11,11 @@ const PORT = process.env.PORT || 3001;
 const app = express();
 require('dotenv').config();
 
-// // Express middleware
-// app.use(express.urlencoded({ extended: false }));
-// app.use(express.json());
-
 // Connect to database
 const db = mysql.createConnection(
     {
       host: '127.0.0.1',
-      // MySQL username,
       user: process.env.DB_USER,
-      // TODO: Add MySQL password here
       password: process.env.DB_PASSWORD,
       database: 'Employee_DB',
     },
@@ -40,18 +34,16 @@ const questionsNE =[
 db.connect((err) =>{
     if(err) throw err;
     console.table(chalk.white('\nConnected to the Employee_DB database. \n'));
-
-    console.table(chalk.white.bold(
-          `==========================================================================`
+    console.table(chalk.blue.bold(
+          `===================================================================================================================================`
     ));
     console.log(``);
-    // console.table(chalk.greenBright('\n Employee Manager \n'));
-    console.table(chalk.greenBright.bold(figlet.textSync("Employee Tracker")));
+    console.table(chalk.yellowBright.bold(figlet.textSync("Employee Database Tracker")));
     console.log(``);
     console.log(``);
     console.table(
-        chalk.white.bold(
-            `========================================================================`
+        chalk.blue.bold(
+            `================================================================================================================================`
         ));
 options();
 });
@@ -159,6 +151,7 @@ db.query(query,(err,results) =>{
 
 const viewRoles= () =>{
     const query = "SELECT * FROM roles";
+    
     db.query(query,(err,results) =>{
         if (err) throw err;
         console.table(results);
@@ -183,16 +176,16 @@ const addDept= ()=> {
 
         inquirer.prompt([
                 {
-                    name:'department',
+                    name:'newdepartment',
                     type:'input',
                     message:'What Department would you like to add?',
                 },
             ])
             .then((ans)=>{
-                const department = ans.department;
+                const newdepartment = ans.newdepartment;
                 db.query(
-                    `INSERT INTO department(dept_name) VALUES('${department}')`,
-                    [ans.department],
+                    `INSERT INTO department(name) VALUES('${newdepartment}')`,
+                    [ans.newdepartment],
                     (err,results)=>{
                     options();
                     }
@@ -203,7 +196,7 @@ const addDept= ()=> {
 
 
     const addRole= () =>{
-        const query = "SELECT id, dept_name FROM department";
+        const query = "SELECT id, dept_id FROM department";
         db.query(query,(err,results) => {
             if (err) throw err;
             console.table(results[0]);
@@ -223,16 +216,11 @@ const addDept= ()=> {
                         type:'input',
                         message:'What is the the Department for new role?'
                       
-                    //     choice: function(){
-                    //         let choices = results[1].map((choice)=> choice.name);
-                    //         return choices;
-                    //     },
-                    //     message: 'Select the Department for the new Role?',
                     },
                 ]
                 )
                 .then((ans)=>{
-                    db.query(`INSERT INTO roles(title, salary, dept_name)
+                    db.query(`INSERT INTO roles(title, salary, dept_id)
                     VALUES('${ans.newRole}','${ans.newSal}','${ans.newdept}')`),
                     options();
                 });
@@ -266,6 +254,13 @@ const addDept= ()=> {
                         message:'What is the the new Salary?'  
                     },
                     {
+                        name:'newdept',
+                        type:'input',
+                        message:'What is the the Department for new role?'
+                      
+            
+                    },
+                    {
                         name:'newManager',
                         type:'input',
                         message:'Who is the new employees Manager?'
@@ -274,11 +269,74 @@ const addDept= ()=> {
                 )
                 .then((ans)=>{
                     db.query(`INSERT INTO employee(first_name, last_name, title, salary, dept_name,manager)
-                    VALUES('${ans.newFname}','${ans.newLname}','${ans.newrole}','${ans.newSal}','${ans.newManager}')`),
+                    VALUES('${ans.newFname}','${ans.newLname}','${ans.newrole}','${ans.newSal}','${ans.newdept}','${ans.newManager}')`),
                     options();
                 });
     });
     };
+
+
+//update Employee roles
+const updateEmplyrole = () => {
+    //get id and and name from employees; choose what employee's role will be updated
+    db.query(`SELECT id, employee.first_name, employee.last_name FROM employee`, (err, results) => {
+        if (err) {
+            console.log(err);
+        } else {
+            let empQueryArray = results.map((obj) => {
+                return {
+                    //taking values from query and renaming the keys
+                    value: obj.id,
+                    name: obj.first_name + ' ' + obj.last_name
+                };
+            });
+            // console.log(empQueryArray);
+            //query to get roles to choose to update to; need id and role title
+            db.query(`SELECT id, title FROM roles`, async (err, results) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    let roleQueryArray = results.map((obj) => {
+                        return {
+                            value: obj.id,
+                            name: obj.title
+                        };
+                    });
+                    // console.log(roleQueryArray);
+                    await inquirer.prompt([
+                        {
+                            type: 'list',
+                            name: 'employeeName',
+                            message: `Which employee's role do you want to update?`,
+                            choices: empQueryArray,
+                          },
+                          {
+                            type: 'list',
+                            name: 'roleName',
+                            message: 'Which role do you want to assign the selected employee?',
+                            choices: roleQueryArray,
+                          },
+                    ])
+                    .then((ans) => {
+                        const empName = ans.employeeName;
+                        const roleName = ans.roleName;
+        
+                        db.query(`UPDATE employee SET role_id = ${roleName} WHERE id = ${empName}`, (err, results) => {
+                            if (err) {
+                                console.log(err);
+                            } else {
+                                console.log('');
+                                console.log('EMPLOYEE ROLE UPDATED'.bold.brightCyan);
+                                console.log('');
+                            };
+                        });
+                        options();
+                    });
+                };
+            });
+        };
+    });
+}
 
     // Default response for any other request (Not Found)
 app.use((req, res) => {

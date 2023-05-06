@@ -4,51 +4,27 @@ CREATE DATABASE Employee_DB;
 USE Employee_DB;
 
 CREATE TABLE department (
-    id INTEGER(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
-    dept_name VARCHAR (40) NOT NULL
-    
+    id INTEGER(11) AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR (40) NOT NULL 
 );
 
 CREATE TABLE roles (
-id INTEGER (11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+id INTEGER (11) AUTO_INCREMENT PRIMARY KEY,
 title VARCHAR (40) NOT NULL,
-department_id INTEGER,
-dept_name VARCHAR (40) NOT NULL,
 salary DECIMAL,
--- PRIMARY KEY (id),
--- INDEX `index_dept_id`(department_id),
-CONSTRAINT `fk_dept_id`
-FOREIGN KEY (department_id)
-REFERENCES department(id) ON UPDATE CASCADE ON DELETE RESTRICT
+department_id INTEGER,
+CONSTRAINT fk_department FOREIGN KEY (department_id) REFERENCES department(id) ON DELETE SET NULL
 );
+
 
 CREATE TABLE employee (
 id INTEGER (11) AUTO_INCREMENT PRIMARY KEY,
 first_name VARCHAR(30) NOT NULL,
 last_name VARCHAR(30) NOT NULL,
-title VARCHAR (40) NOT NULL,
-dept_name VARCHAR (40) NOT NULL,
-salary DECIMAL,
-role_id INTEGER,
+roles_id INTEGER,
+CONSTRAINT fk_roles FOREIGN KEY (roles_id) REFERENCES roles(id)  ON DELETE CASCADE,
 manager_id INTEGER,
-manager VARCHAR (40) NOT NULL,
--- PRIMARY KEY (id),
-INDEX `index_role`(role_id),
-CONSTRAINT `fk_role_id`
-FOREIGN KEY (role_id)
-REFERENCES roles(id) ON UPDATE CASCADE ON DELETE RESTRICT,
-INDEX `index_manager`(manager_id),
-CONSTRAINT `fk_manager_id`
-FOREIGN KEY (manager_id)
-REFERENCES roles(id) ON UPDATE CASCADE ON DELETE RESTRICT
+CONSTRAINT fk_manager FOREIGN KEY (manager_id) REFERENCES employee(id) ON DELETE  SET NULL
+
 );
-
--- SELECT * FROM employee;
--- SELECT * FROM roles;
--- SELECT * FROM department;
-
--- INSERT INTO department(name)
--- VALUES ('copy')
--- SELECT * FROM department
--- SELECT name AS "Departments" FROM department
 
