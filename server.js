@@ -140,6 +140,10 @@ const options= () =>{
             }});
 };
 
+const Exit= ()=>{
+    options();
+}
+
 const viewDept= ()=> {
 const query = "SELECT * FROM department";
 db.query(query,(err,results) =>{
